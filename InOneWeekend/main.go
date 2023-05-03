@@ -15,10 +15,10 @@ func main(){
 	var viewport_width = viewport_height * aspect_ratio
 	var focal_length = 1.0
 
-	var origin = vec3{0, 0, 0}
-	var horizontal = vec3{viewport_width, 0, 0}
-	var vertical = vec3{0, viewport_height, 0}
-	var lower_left_corner = origin.sub(horizontal.divScalar(2)).sub(vertical.divScalar(2)).sub(vec3{0, 0, focal_length})
+	var origin = Vec3{0, 0, 0}
+	var horizontal = Vec3{viewport_width, 0, 0}
+	var vertical = Vec3{0, viewport_height, 0}
+	var lower_left_corner = origin.sub(horizontal.divScalar(2)).sub(vertical.divScalar(2)).sub(Vec3{0, 0, focal_length})
 
 	// Rendar
 
@@ -28,8 +28,8 @@ func main(){
 		for i := 0; i < image_width; i++ {
 			var u = float64(i) / (image_width - 1)
 			var v = float64(j) / (image_height - 1)
-			var r = ray{origin, lower_left_corner.add(horizontal.mulScalar(u)).add(vertical.mulScalar(v)).sub(origin)}
-			pixel_color := r.ray_color()
+			var r = Ray{origin, lower_left_corner.add(horizontal.mulScalar(u)).add(vertical.mulScalar(v)).sub(origin)}
+			pixel_color := r.Ray_color()
 			write_color(pixel_color)
 		}
 	}
