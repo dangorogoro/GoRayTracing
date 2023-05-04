@@ -37,5 +37,8 @@ func (v Vec3) mulScalar(t float64) Vec3 {
 func (v Vec3) divScalar(t float64) Vec3 {
 	return Vec3{v.x / t, v.y / t, v.z / t}
 }
+func unit_vector(v Vec3) Vec3 {
+	return v.divScalar(v.length())
+}
 type point3 Vec3
 type color Vec3
