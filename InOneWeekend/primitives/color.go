@@ -1,9 +1,9 @@
-package main
+package primitives
 
 import (
 	"fmt"
 )
 
-func write_color(c Vec3) {
-	fmt.Printf("%d %d %d\n", uint8(c.x * 255.999), uint8(c.y * 255.999), uint8(c.z * 255.999))
+func Write_color(c Vec3) {
+	fmt.Printf("%d %d %d\n", uint8(c.X * 255.999), uint8(c.Y * 255.999), uint8(c.Z * 255.999))
 }
