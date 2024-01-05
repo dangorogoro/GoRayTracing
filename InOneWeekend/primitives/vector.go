@@ -11,11 +11,11 @@ type Vec3 struct {
 func (v1 Vec3) Dot(v2 Vec3) float64 {
 	return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z
 }
-func (v Vec3) length() float64 {
+func (v Vec3) Length() float64 {
 	return math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z)
 }
-func (v Vec3) normalize() Vec3 {
-	l := v.length()
+func (v Vec3) Normalize() Vec3 {
+	l := v.Length()
 	return Vec3{v.X / l, v.Y / l, v.Z / l}
 }
 
@@ -38,7 +38,7 @@ func (v Vec3) DivScalar(t float64) Vec3 {
 	return Vec3{v.X / t, v.Y / t, v.Z / t}
 }
 func unit_vector(v Vec3) Vec3 {
-	return v.DivScalar(v.length())
+	return v.DivScalar(v.Length())
 }
-type point3 Vec3
-type color Vec3
+type Point3 Vec3
+type Color Vec3

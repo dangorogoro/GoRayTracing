@@ -1,6 +1,6 @@
 package primitives
 
-type hitRecord struct {
+type HitRecord struct {
 	T float64
 	P, Normal Vec3
 }

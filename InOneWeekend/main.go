@@ -21,6 +21,12 @@ func main(){
 	var vertical = p.Vec3{0, viewport_height, 0}
 	var lower_left_corner = Origin.Sub(horizontal.DivScalar(2)).Sub(vertical.DivScalar(2)).Sub(p.Vec3{0, 0, focal_length})
 
+
+	var sphere = p.Sphere{p.Vec3{0, 0, -1}, 0.5}
+	var floor  = p.Sphere{p.Vec3{0, -100.5, -1}, 100}
+
+	var world = p.World{[]p.Hittable{&sphere, &floor}}
+
 	// Rendar
 
 	fmt.Printf("P3\n%d %d\n255\n", image_width, uint32(image_height))
@@ -30,7 +36,7 @@ func main(){
 			var u = float64(i) / (image_width - 1)
 			var v = float64(j) / (image_height - 1)
 			var r = p.Ray{Origin, lower_left_corner.Add(horizontal.MulScalar(u)).Add(vertical.MulScalar(v)).Sub(Origin)}
-			pixel_color := r.Ray_color()
+			pixel_color := p.Ray_color(&r, &world)
 			p.Write_color(pixel_color)
 		}
 	}
