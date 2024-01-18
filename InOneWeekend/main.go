@@ -5,6 +5,9 @@ import (
   "os"
   p "InOneWeekend/primitives"
 )
+const (
+  ns = 100
+)
 func main(){
   fmt.Fprintln(os.Stderr, "Program Start.\n")
   // Image
@@ -19,6 +22,6 @@ func main(){
 
   var camera = p.NewCamera(aspect_ratio, image_width)
   // Rendar
-  camera.Rendar(&world)
+  camera.Rendar(&world, ns)
 
 }
