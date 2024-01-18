@@ -15,13 +15,15 @@ func (r Ray) At(t float64) Vec3 {
 }
 
 
-func  Ray_color(r *Ray, h Hittable) Vec3 {
-  hit, record := h.Hit(r, 0.0, math.MaxFloat64) 
+func Ray_color(r *Ray, world Hittable) Vec3 {
+  hit, record := world.Hit(r, 0.0, math.MaxFloat64) 
   if hit {
-    return record.Normal.AddScalar(1.0).MulScalar(0.5)
+    var direction = random_on_hemisphere(record.Normal)
+    var newR = Ray{record.P, direction}
+    return Ray_color(&newR, world).MulScalar(0.5)
   }
-  unit_Direction := r.Direction.Normalize()
-  return gradient(unit_Direction)
+  unit_direction := r.Direction.Normalize()
+  return gradient(unit_direction)
 }
 
 
