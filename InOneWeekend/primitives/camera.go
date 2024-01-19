@@ -9,7 +9,7 @@ type Camera struct {
   lowerLeft, horizontal, vertical, origin, pixel00_loc, pixel_delta_u, pixel_delta_v, center Vec3
   image_width, image_height uint32
   aspect_ratio float64
-  samples_per_pixel int32
+  samples_per_pixel, max_depth int32
 }
 
 func NewCamera(aspect_ratio float64, image_width uint32) *Camera {
@@ -49,7 +49,7 @@ func (c *Camera) Rendar(world Hittable, alias_sampling int32) {
       var pixel_color = Vec3{0, 0, 0}
       for sample := int32(0); sample < c.samples_per_pixel; sample++ {
         var r = c.getRay(i, j)
-        pixel_color = pixel_color.Add(Ray_color(&r, world))
+        pixel_color = pixel_color.Add(Ray_color(&r, c.max_depth, world))
       }
       Write_color(pixel_color, c.samples_per_pixel)
     }
@@ -80,11 +80,9 @@ func (c *Camera) initialize(alias_sampling int32) {
   var viewport_upper_left = center.Sub(Vec3{0, 0, focal_length}).Sub(viewport_u.DivScalar(2)).Sub(viewport_v.DivScalar(2))
   c.pixel00_loc = viewport_upper_left.Add((c.pixel_delta_u.Add(c.pixel_delta_v)).MulScalar(2))
 
+  c.max_depth = 50;
 }
 
-func (c *Camera) rayColor(r *Ray, world Hittable) Vec3 {
-  return Ray_color(r, world)
-}
 
 func (c *Camera) getRay(i int32, j int32) Ray {
   var pixel_center = c.pixel00_loc.Add(c.pixel_delta_u.MulScalar(float64(i))).Add(c.pixel_delta_v.MulScalar(float64(j)))
