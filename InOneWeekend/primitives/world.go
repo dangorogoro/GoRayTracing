@@ -4,6 +4,10 @@ type World struct {
   Elements []Hittable
 }
 
+func (w *World) Add(h Hittable) {
+	w.Elements = append(w.Elements, h)
+}
+
 func (w *World) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
   hitAnything := false
   closest := tMax

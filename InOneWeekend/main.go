@@ -15,10 +15,17 @@ func main(){
   const image_width = 400
 
   // Camera
-  var sphere = p.Sphere{p.Vec3{0, 0, -1}, 0.5}
-  var floor  = p.Sphere{p.Vec3{0, -100.5, -1}, 100}
+  var material_ground = p.Lambertian{p.Vec3{0.8, 0.3, 0.0}}
+  var material_center = p.Lambertian{p.Vec3{0.7, 0.3, 0.3}}
+  var material_left   = p.Metal{p.Vec3{0.8, 0.8, 0.8}}
+  var material_right  = p.Metal{p.Vec3{0.8, 0.6, 0.2}}
 
-  var world = p.World{[]p.Hittable{&sphere, &floor}}
+
+  var world = p.World{}
+  world.Add(&p.Sphere{p.Vec3{ 0.0, -100.5, -1.0}, 100.0, material_ground})
+  world.Add(&p.Sphere{p.Vec3{ 0.0,    0.0, -1.0},   0.5, material_center})
+  world.Add(&p.Sphere{p.Vec3{-1.0,    0.0, -1.0},   0.5, material_left})
+  world.Add(&p.Sphere{p.Vec3{ 1.0,    0.0, -1.0},   0.5, material_right})
 
   var camera = p.NewCamera(aspect_ratio, image_width)
   // Rendar
