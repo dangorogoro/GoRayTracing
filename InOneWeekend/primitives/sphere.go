@@ -6,6 +6,7 @@ import (
 type Sphere struct {
   Center Vec3
   Radius float64
+  Mat Material
 }
 
 func (s *Sphere) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
@@ -15,6 +16,7 @@ func (s *Sphere) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
   c := oc.Dot(oc) - s.Radius*s.Radius // (A-C)^2 - r^2
   ans := b * b - 4 * a * c
   rec := HitRecord{}
+  rec.Mat = s.Mat
   if ans > 0 {
     t := (-b - math.Sqrt(ans)) / (2.0 * a)
     if t < tMax && t > tMin {
