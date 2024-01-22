@@ -22,11 +22,19 @@ func (v Vec3) Normalize() Vec3 {
   return Vec3{v.X / l, v.Y / l, v.Z / l}
 }
 
+func (v Vec3) NearZero() bool {
+  var s = 1e-8
+  return (math.Abs(v.X) < s && math.Abs(v.Y) < s && math.Abs(v.Z) < s)
+}
+
 func (v Vec3) Add(o Vec3) Vec3 {
   return Vec3{v.X + o.X, v.Y + o.Y, v.Z + o.Z}
 }
 func (v Vec3) Sub(o Vec3) Vec3 {
   return Vec3{v.X - o.X, v.Y - o.Y, v.Z - o.Z}
+}
+func (v Vec3) Mul(o Vec3) Vec3 {
+  return Vec3{v.X * o.X, v.Y * o.Y, v.Z * o.Z}
 }
 func (v Vec3) AddScalar(t float64) Vec3 {
   return Vec3{v.X + t, v.Y + t, v.Z + t}
@@ -74,4 +82,8 @@ func random_on_hemisphere(normal Vec3) Vec3 {
   } else {
     return p.MulScalar(-1)
   }
+}
+
+func reflect(v Vec3, n Vec3) Vec3 {
+  return v.Sub(n.MulScalar(2 * v.Dot(n)))
 }

@@ -19,12 +19,14 @@ func Ray_color(r *Ray, depth int32, world Hittable) Vec3 {
   if depth <= 0 {
     return Vec3{0, 0, 0}
   }
-  hit, record := world.Hit(r, 0.001, math.MaxFloat64) 
+  hit, rec := world.Hit(r, 0.001, math.MaxFloat64) 
   if hit {
-    var direction = record.Normal.Add(random_unit_vector())
-    //var direction = random_on_hemisphere(record.Normal)
-    var newR = Ray{record.P, direction}
-    return Ray_color(&newR, depth - 1, world).MulScalar(0.5)
+    flag, scattered, attenuation := rec.Mat.Scatter(*r, rec)
+    if flag {
+      return Ray_color(&scattered, depth-1, world).Mul(attenuation)
+    }
+
+    return Vec3{0, 0, 0}
   }
   unit_direction := r.Direction.Normalize()
   return gradient(unit_direction)
