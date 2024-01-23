@@ -10,6 +10,7 @@ type Lambertian struct {
 }
 type Metal struct {
 	Albedo Vec3
+	fuzz float64
 }
 func (l Lambertian) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
 	var scatter_direction = rec.Normal.Add(random_unit_vector())
@@ -28,11 +29,21 @@ func (l Lambertian) Color() Vec3 {
 func (l Metal) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
 	var reflected = reflect(r_in.Direction.unitVector(), rec.Normal);
 
-	var scattered = Ray{rec.P, reflected}
+	var scattered = Ray{rec.P, reflected.Add(random_unit_vector().MulScalar(l.fuzz))}
 	var attenuation = l.Albedo
 	return true, scattered, attenuation
 }
 
 func (l Metal) Color() Vec3 {
 	return l.Albedo
+}
+
+func NewMetal(v Vec3, f float64) *Metal{
+	m := new(Metal)
+	m.Albedo = v
+	m.fuzz = 1.0
+	if f < 1.0 {
+		m.fuzz = f
+	}
+	return m
 }

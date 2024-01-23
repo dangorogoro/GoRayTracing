@@ -17,8 +17,8 @@ func main(){
   // Camera
   var material_ground = p.Lambertian{p.Vec3{0.8, 0.3, 0.0}}
   var material_center = p.Lambertian{p.Vec3{0.7, 0.3, 0.3}}
-  var material_left   = p.Metal{p.Vec3{0.8, 0.8, 0.8}}
-  var material_right  = p.Metal{p.Vec3{0.8, 0.6, 0.2}}
+  var material_left   = p.NewMetal(p.Vec3{0.8, 0.8, 0.8}, 0.3)
+  var material_right  = p.NewMetal(p.Vec3{0.8, 0.6, 0.2}, 1.0)
 
 
   var world = p.World{}
