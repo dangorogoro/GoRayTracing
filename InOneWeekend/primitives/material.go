@@ -2,7 +2,6 @@ package primitives
 
 type Material interface {
 	Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3)
-	Color() Vec3
 }
 
 type Lambertian struct {
@@ -12,6 +11,10 @@ type Metal struct {
 	Albedo Vec3
 	fuzz float64
 }
+type Dielectric struct {
+	Ir float64
+}
+
 func (l Lambertian) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
 	var scatter_direction = rec.Normal.Add(random_unit_vector())
 	if scatter_direction.NearZero() {
@@ -22,9 +25,12 @@ func (l Lambertian) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
 	return true, scattered, attenuation
 }
 
+
+/*
 func (l Lambertian) Color() Vec3 {
 	return l.Albedo
 }
+*/
 
 func (l Metal) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
 	var reflected = reflect(r_in.Direction.unitVector(), rec.Normal);
@@ -34,9 +40,11 @@ func (l Metal) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
 	return true, scattered, attenuation
 }
 
+/*
 func (l Metal) Color() Vec3 {
 	return l.Albedo
 }
+*/
 
 func NewMetal(v Vec3, f float64) *Metal{
 	m := new(Metal)
@@ -46,4 +54,22 @@ func NewMetal(v Vec3, f float64) *Metal{
 		m.fuzz = f
 	}
 	return m
+}
+
+func (l Dielectric) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
+	var attenuation = Vec3{1.0, 1.0, 1.0}
+	var refraction_ratio = 0.0;
+
+	if rec.front_face {
+		refraction_ratio = 1.0 / l.Ir
+	}else{
+		refraction_ratio = l.Ir
+	}
+
+
+	var unit_direction = r_in.Direction.unitVector()
+	var refracted = refract(unit_direction, rec.Normal, refraction_ratio);
+
+	var scattered = Ray{rec.P, refracted}
+	return true, scattered, attenuation
 }

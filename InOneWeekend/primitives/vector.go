@@ -14,13 +14,16 @@ type Color Vec3
 func (v1 Vec3) Dot(v2 Vec3) float64 {
   return v1.X * v2.X + v1.Y * v2.Y + v1.Z * v2.Z
 }
+func (v Vec3) Minus() Vec3 {
+  return Vec3{-v.X, -v.Y, -v.Z}
+}
+func (v Vec3) length_squared() float64 {
+  return v.X * v.X + v.Y * v.Y + v.Z * v.Z
+}
 func (v Vec3) Length() float64 {
-  return math.Sqrt(v.X * v.X + v.Y * v.Y + v.Z * v.Z)
+  return math.Sqrt(v.length_squared())
 }
-func (v Vec3) Normalize() Vec3 {
-  l := v.Length()
-  return Vec3{v.X / l, v.Y / l, v.Z / l}
-}
+
 
 func (v Vec3) NearZero() bool {
   var s = 1e-8
@@ -64,7 +67,7 @@ func random_vec_min_max(min, max float64) Vec3 {
 func random_in_unit_sphere() Vec3 {
   for {
     var p = random_vec_min_max(-1, 1)
-    if p.Length() < 1 {
+    if p.length_squared() < 1 {
       return p
     }
   }
@@ -86,4 +89,11 @@ func random_on_hemisphere(normal Vec3) Vec3 {
 
 func reflect(v Vec3, n Vec3) Vec3 {
   return v.Sub(n.MulScalar(2 * v.Dot(n)))
+}
+
+func refract(uv Vec3, n Vec3, etai_over_etat float64) Vec3 {
+  var cos_theta = math.Min(uv.Minus().Dot(n), 1.0)
+  var r_out_perp = uv.Add(n.MulScalar(cos_theta)).MulScalar(etai_over_etat)
+  var r_out_parallel = n.Minus().MulScalar(math.Sqrt(math.Abs(1.0 - r_out_perp.length_squared())))
+  return r_out_parallel.Add(r_out_perp)
 }
