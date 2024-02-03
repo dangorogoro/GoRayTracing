@@ -10,7 +10,7 @@ type Sphere struct {
 }
 
 
-func (s *Sphere) Hit(r *Ray, tMin float64, tMax float64) (flag bool, rec HitRecord) {
+func (s *Sphere) Hit(r *Ray, tMin float64, tMax float64, rec *HitRecord) (flag bool) {
   oc := r.Origin.Sub(s.Center)  // A - C
   a := r.Direction.length_squared() // (tb)^2
   b := 2.0 * oc.Dot(r.Direction)  // 2t(A-c)

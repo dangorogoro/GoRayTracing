@@ -8,7 +8,7 @@ type HitRecord struct {
 }
 
 type Hittable interface {
-  Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord)
+  Hit(r *Ray, tMin float64, tMax float64, rec *HitRecord) bool
 }
 
 func (h *HitRecord) set_face_normal(r *Ray, outward_normal *Vec3){

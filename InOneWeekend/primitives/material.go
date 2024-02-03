@@ -15,14 +15,15 @@ type Dielectric struct {
 	Ir float64
 }
 
-func (l Lambertian) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
+func (l Lambertian) Scatter(r_in Ray, rec HitRecord) (flag bool, scattered Ray, attenuation Vec3) {
+	flag = true
 	var scatter_direction = rec.Normal.Add(random_unit_vector())
 	if scatter_direction.NearZero() {
 		scatter_direction = rec.Normal
 	}
-	var scattered = Ray{rec.P, scatter_direction}
-	var attenuation = l.Albedo
-	return true, scattered, attenuation
+	scattered = Ray{rec.P, scatter_direction}
+	attenuation = l.Albedo
+	return
 }
 
 
@@ -32,12 +33,13 @@ func (l Lambertian) Color() Vec3 {
 }
 */
 
-func (l Metal) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
+func (l Metal) Scatter(r_in Ray, rec HitRecord) (flag bool, scattered Ray, attenuation Vec3) {
+	flag = true
 	var reflected = reflect(r_in.Direction.unitVector(), rec.Normal);
 
-	var scattered = Ray{rec.P, reflected.Add(random_unit_vector().MulScalar(l.fuzz))}
-	var attenuation = l.Albedo
-	return true, scattered, attenuation
+	scattered = Ray{rec.P, reflected.Add(random_unit_vector().MulScalar(l.fuzz))}
+	attenuation = l.Albedo
+	return
 }
 
 /*
@@ -56,8 +58,9 @@ func NewMetal(v Vec3, f float64) *Metal{
 	return m
 }
 
-func (l Dielectric) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
-	var attenuation = Vec3{1.0, 1.0, 1.0}
+func (l Dielectric) Scatter(r_in Ray, rec HitRecord) (flag bool, scattered Ray, attenuation Vec3) {
+	flag = true
+	attenuation = Vec3{1.0, 1.0, 1.0}
 	var refraction_ratio = 0.0;
 
 	if rec.front_face {
@@ -70,6 +73,6 @@ func (l Dielectric) Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3) {
 	var unit_direction = r_in.Direction.unitVector()
 	var refracted = refract(unit_direction, rec.Normal, refraction_ratio);
 
-	var scattered = Ray{rec.P, refracted}
+	scattered = Ray{rec.P, refracted}
 	return true, scattered, attenuation
 }

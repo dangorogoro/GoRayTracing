@@ -14,21 +14,25 @@ func (r Ray) At(t float64) Vec3 {
   return a.Add(b)
 }
 
+var ray_rec = HitRecord{}
 
-func Ray_color(r *Ray, depth int32, world Hittable) Vec3 {
+func Ray_color(r *Ray, depth int32, world Hittable) (vec Vec3) {
+  vec = Vec3{0, 0, 0}
   if depth <= 0 {
-    return Vec3{0, 0, 0}
+    return
   }
-  hit, rec := world.Hit(r, 0.001, math.MaxFloat64) 
+  var hit = world.Hit(r, 0.001, math.MaxFloat64, &ray_rec) 
   if hit {
-    flag, scattered, attenuation := rec.Mat.Scatter(*r, rec)
+    flag, scattered, attenuation := ray_rec.Mat.Scatter(*r, ray_rec)
     if flag {
-      return Ray_color(&scattered, depth-1, world).Mul(attenuation)
+      vec = Ray_color(&scattered, depth-1, world).Mul(attenuation)
+      return
     }
-    return Vec3{0, 0, 0}
+    return
   }
-  unit_direction := r.Direction.unitVector()
-  return gradient(unit_direction)
+  var unit_direction = r.Direction.unitVector()
+  vec = gradient(unit_direction)
+  return
 }
 
 

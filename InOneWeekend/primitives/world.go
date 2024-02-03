@@ -8,18 +8,16 @@ func (w *World) Add(h Hittable) {
 	w.Elements = append(w.Elements, h)
 }
 
-func (w *World) Hit(r *Ray, tMin float64, tMax float64) (bool, HitRecord) {
-  hitAnything := false
+func (w *World) Hit(r *Ray, tMin float64, tMax float64, record *HitRecord) (hitAnything bool) {
   closest := tMax
-  record := HitRecord{}
 
   for _, element := range w.Elements {
-    hit, tempRecord := element.Hit(r, tMin, closest)
+    hit := element.Hit(r, tMin, closest, record)
     if hit {
       hitAnything = true
-      closest = tempRecord.T
-      record = tempRecord
+      closest = record.T
+      record = record
     }
   }
-  return hitAnything, record
+  return
 }
