@@ -25,10 +25,9 @@ func Ray_color(r *Ray, depth int32, world Hittable) Vec3 {
     if flag {
       return Ray_color(&scattered, depth-1, world).Mul(attenuation)
     }
-
     return Vec3{0, 0, 0}
   }
-  unit_direction := r.Direction.Normalize()
+  unit_direction := r.Direction.unitVector()
   return gradient(unit_direction)
 }
 
