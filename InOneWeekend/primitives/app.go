@@ -14,9 +14,11 @@ func App(){
   const image_width = 400
 
   // Camera
-  var material_ground = Lambertian{Vec3{0.8, 0.3, 0.0}}
-  var material_center = Lambertian{Vec3{0.7, 0.3, 0.3}}
-  var material_left   = NewMetal(Vec3{0.8, 0.8, 0.8}, 0.3)
+  var material_ground = Lambertian{Vec3{0.8, 0.8, 0.0}}
+  //var material_center = Lambertian{Vec3{0.7, 0.3, 0.3}}
+  //var material_left   = NewMetal(Vec3{0.8, 0.8, 0.8}, 0.3)
+  var material_center = Dielectric{1.5}
+  var material_left   = Dielectric{1.5}
   var material_right  = NewMetal(Vec3{0.8, 0.6, 0.2}, 1.0)
 
 
