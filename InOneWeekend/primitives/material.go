@@ -1,5 +1,8 @@
 package primitives
 
+import (
+	"math"
+)
 type Material interface {
 	Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3)
 }
@@ -71,8 +74,22 @@ func (l Dielectric) Scatter(r_in Ray, rec HitRecord) (flag bool, scattered Ray, 
 
 
 	var unit_direction = r_in.Direction.unitVector()
-	var refracted = refract(unit_direction, rec.Normal, refraction_ratio);
+	var cos_theta = math.Min(unit_direction.Minus().Dot(rec.Normal), 1.0)
+	var sin_theta = math.Sqrt(1.0 - cos_theta * cos_theta)
 
-	scattered = Ray{rec.P, refracted}
-	return true, scattered, attenuation
+	var cannot_refract = false
+	if refraction_ratio * sin_theta > 1.0 {
+		cannot_refract = true
+	}
+
+	var direction = Vec3{} 
+
+	if cannot_refract {
+		direction = reflect(unit_direction, rec.Normal)
+	}else {
+		direction = refract(unit_direction, rec.Normal, refraction_ratio);
+	}
+
+	scattered = Ray{rec.P, direction}
+	return
 }
