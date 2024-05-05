@@ -16,8 +16,8 @@ func App(){
   // Camera
   var material_ground = Lambertian{Vec3{0.8, 0.8, 0.0}}
   var material_center = Lambertian{Vec3{0.1, 0.2, 0.5}}
-  var material_left   = Dielectric{1.5}
-  var material_right  = NewMetal(Vec3{0.8, 0.6, 0.2}, 0.0)
+  var material_left   = Dielectric{1.00 / 1.33}
+  var material_right  = NewMetal(Vec3{0.8, 0.6, 0.2}, 1.0)
 
 
   var world = World{}
