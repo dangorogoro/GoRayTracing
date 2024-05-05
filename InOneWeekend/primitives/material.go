@@ -2,6 +2,7 @@ package primitives
 
 import (
 	"math"
+  "math/rand"
 )
 type Material interface {
 	Scatter(r_in Ray, rec HitRecord) (bool, Ray, Vec3)
@@ -15,7 +16,7 @@ type Metal struct {
 	fuzz float64
 }
 type Dielectric struct {
-	Ir float64
+	refraction_index float64
 }
 
 func (l Lambertian) Scatter(r_in Ray, rec HitRecord) (flag bool, scattered Ray, attenuation Vec3) {
@@ -61,15 +62,21 @@ func NewMetal(v Vec3, f float64) *Metal{
 	return m
 }
 
+func (l Dielectric) reflectance(cosine float64, refraction_index float64) (r0 float64) {
+	r0 = (1 - refraction_index) / (1 + refraction_index)
+	r0 = r0 * r0
+	return
+}
+
 func (l Dielectric) Scatter(r_in Ray, rec HitRecord) (flag bool, scattered Ray, attenuation Vec3) {
 	flag = true
 	attenuation = Vec3{1.0, 1.0, 1.0}
-	var refraction_ratio = 0.0;
+	var ri = 0.0;
 
 	if rec.front_face {
-		refraction_ratio = 1.0 / l.Ir
+		ri = 1.0 / l.refraction_index
 	}else{
-		refraction_ratio = l.Ir
+		ri = l.refraction_index
 	}
 
 
@@ -78,16 +85,16 @@ func (l Dielectric) Scatter(r_in Ray, rec HitRecord) (flag bool, scattered Ray, 
 	var sin_theta = math.Sqrt(1.0 - cos_theta * cos_theta)
 
 	var cannot_refract = false
-	if refraction_ratio * sin_theta > 1.0 {
+	if ri * sin_theta > 1.0 {
 		cannot_refract = true
 	}
 
 	var direction = Vec3{} 
 
-	if cannot_refract {
+	if cannot_refract || l.reflectance(cos_theta, ri) > rand.Float64(){
 		direction = reflect(unit_direction, rec.Normal)
 	}else {
-		direction = refract(unit_direction, rec.Normal, refraction_ratio);
+		direction = refract(unit_direction, rec.Normal, ri);
 	}
 
 	scattered = Ray{rec.P, direction}
