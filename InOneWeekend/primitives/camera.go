@@ -4,11 +4,12 @@ import (
   "fmt"
   "os"
   "math/rand"
+  "math"
 )
 type Camera struct {
   lowerLeft, horizontal, vertical, origin, pixel00_loc, pixel_delta_u, pixel_delta_v, center Vec3
   image_width, image_height uint32
-  aspect_ratio float64
+  aspect_ratio, vfov float64
   samples_per_pixel, max_depth int32
 }
 
@@ -20,6 +21,7 @@ func NewCamera(aspect_ratio float64, image_width uint32) *Camera {
   c.origin = Vec3{0.0, 0.0, 0.0}
   c.image_width = image_width
   c.aspect_ratio = aspect_ratio
+  c.vfov = 90
   c.image_height = uint32(float64(image_width) / c.aspect_ratio)
   return c
 }
@@ -65,7 +67,9 @@ func (c *Camera) initialize(alias_sampling int32) {
   var center = Vec3{0, 0, 0}
   // Determine viewport dimensions
   var focal_length = 1.0
-  var viewport_height = 2.0
+  var theta = degrees_to_radians(c.vfov)
+  var h = math.Tan(theta/2.0)
+  var viewport_height = 2.0 * h * focal_length
   var viewport_width = viewport_height * c.aspect_ratio
   
   // Calculate the vectors across the horizontal and down the vertical viewport edges.

@@ -3,6 +3,7 @@ package primitives
 import (
   "fmt"
   "os"
+  "math"
 )
 const (
   ns = 100
@@ -14,19 +15,14 @@ func App(){
   const image_width = 400
 
   // Camera
-  var material_ground = Lambertian{Vec3{0.8, 0.8, 0.0}}
-  var material_center = Lambertian{Vec3{0.1, 0.2, 0.5}}
-  var material_left   = Dielectric{1.50}
-  var material_bubble = Dielectric{1.00 / 1.50}
-  var material_right  = NewMetal(Vec3{0.8, 0.6, 0.2}, 1.0)
+  var R = math.Cos(math.Pi/4)
+  var material_left   = Lambertian{Vec3{0, 0, 1}}
+  var material_right   = Lambertian{Vec3{1, 0, 0}}
 
 
   var world = World{}
-  world.Add(&Sphere{Vec3{ 0.0, -100.5, -1.0}, 100.0, material_ground})
-  world.Add(&Sphere{Vec3{ 0.0,    0.0, -1.2},   0.5, material_center})
-  world.Add(&Sphere{Vec3{-1.0,    0.0, -1.0},   0.5, material_left})
-  world.Add(&Sphere{Vec3{-1.0,    0.0, -1.0},   0.4, material_bubble})
-  world.Add(&Sphere{Vec3{ 1.0,    0.0, -1.0},   0.5, material_right})
+  world.Add(&Sphere{Vec3{-R,    0.0, -1.0},   R, material_left})
+  world.Add(&Sphere{Vec3{ R,    0.0, -1.0},   R, material_right})
 
   var camera = NewCamera(aspect_ratio, image_width)
   // Rendar
